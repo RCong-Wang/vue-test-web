@@ -43,7 +43,7 @@ export default{
   created(){
     this.axios = inject('axios');
     this.GetMessage();
-    this.websocket = new WebSocket(`${this.local_ws}/ws/chat/${this.roomID}/`);
+    this.websocket = new WebSocket(`wss://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/ws/chat/${this.roomID}/`);
     this.websocket.onopen = (event) =>{
       console.log("successful link: ",event);
     };
@@ -58,7 +58,7 @@ export default{
   },
   methods:{
     GetMessage(){
-      this.axios.get(`${this.local_http}/main/getmessage/`,{
+      this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/getmessage/`,{
         params:{
           id : this.roomID,
         }})
@@ -79,14 +79,14 @@ export default{
         console.log('發送失敗: 訊息欄為空');
       }
       else{
-        this.axios.get(`${this.local_http}/user/getcsrf/`)
+        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
         .then(response=>{
           const csrf = response.data.csrf_token;
           const data = {
             messages: this.sendmessage,
             id: this.roomID
           };
-          this.axios.post(`${this.local_http}/main/sendmessage/`, data, {
+          this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/sendmessage/`, data, {
             withCredentials: true,
             headers: {
               'X-CSRFToken': csrf,

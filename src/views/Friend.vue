@@ -39,7 +39,7 @@
     },
     methods:{
       FriendList(){
-        this.axios.get(`${this.local_http}/user/friendlist/`)
+        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/friendlist/`)
         .then(response=>{
           this.Friends = response.data.friends;
           console.log(this.Friends)
@@ -50,7 +50,7 @@
         console.log("good");
       },
       SearchFriend(){
-        this.axios.get(`${this.local_http}/user/searchfriend/`,{
+        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/searchfriend/`,{
           params:{
             username: this.search_box
           }
@@ -66,11 +66,11 @@
         })
       },
       AddFriend(){
-        this.axios.get(`${this.local_http}/user/getcsrf/`)
+        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
         .then(response=>{
           const csrf = response.data.csrf_token;
           console.log(csrf);          
-          this.axios.post(`${this.local_http}/user/addfriend/`,this.user_id,{
+          this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/addfriend/`,this.user_id,{
               withCredentials: true,
               headers:{
                 'X-CSRFToken': csrf,
@@ -99,7 +99,7 @@
       },
       EnterChatroom(friend_id){
         console.log(friend_id);
-        this.axios.get(`${this.local_http}/main/isexistchatroom/`,{
+        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/isexistchatroom/`,{
           params:{
             id: friend_id
           }
@@ -111,11 +111,11 @@
             this.$router.push('chatroom/');
           }
           else{
-            this.axios.get(`${this.local_http}/user/getcsrf/`)
+            this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
             .then(response=>{
               const csrf = response.data.csrf_token;
               console.log(csrf);
-              this.axios.post(`${this.local_http}/main/createchatroom/`,friend_id,{
+              this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/createchatroom/`,friend_id,{
                 withCredentials: true,
                 headers:{
                   'X-CSRFToken': csrf,
