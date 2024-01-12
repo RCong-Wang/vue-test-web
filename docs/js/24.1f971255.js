@@ -1,0 +1,2 @@
+"use strict";(self["webpackChunkmy_vue_app"]=self["webpackChunkmy_vue_app"]||[]).push([[24],{2024:function(n,u,e){e.r(u),e.d(u,{default:function(){return f}});var r=e(3396);const t=(0,r._)("h1",null,"首頁",-1),a=[t];function c(n,u){return(0,r.wg)(),(0,r.iD)("div",null,a)}var l=e(89);const p={},s=(0,l.Z)(p,[["render",c]]);var f=s}}]);
+//# sourceMappingURL=24.1f971255.js.map
