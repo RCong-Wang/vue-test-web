@@ -2,14 +2,20 @@
   <div>
     <h1>聊天室:{{ this.roomID }}</h1>
   </div>
-  <div>
-    <ul>
-      <li v-for="message in messages">{{ message }}</li>
-    </ul>
+  <div class="chat-window">
+    <div class="message-container" ref="messageContainer">
+      <ul>
+        <li v-for="message in messages">
+          <p>
+            <span style="font-size: 12px;">{{ message.time }}</span><br>
+            <span style="border-style: dashed;">{{ message.senter }}: {{ message.context }}</span>
+          </p>
+        </li>
+      </ul>
+    </div>
   </div>
-  <div>
-    <label for="send-message-box">訊息框</label>
-    <input type="text" id="send-message-box" v-model="sendmessage">
+  <div class="input-container">
+    <input type="text" id="send-message-box" v-model="sendmessage" @keyup.enter="SendMessage"/>
     <button @click="SendMessage">發送訊息</button>
   </div>
 </template>
@@ -37,19 +43,22 @@ export default{
   created(){
     this.axios = inject('axios');
     this.GetMessage();
-    this.websocket = new WebSocket(`wss://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/ws/chat/${this.roomID}/`);
+    this.websocket = new WebSocket(`${this.local_ws}/ws/chat/${this.roomID}/`);
     this.websocket.onopen = (event) =>{
       console.log("successful link: ",event);
     };
+    window.addEventListener("beforeunload", this.closeWebSocket);
+  },
+  mounted() {
     this.websocket.onmessage = (event) =>{
       const message = JSON.parse(event.data).message;
-      this.messages.push(message);
+      // this.messages.push(message);
+      this.messages.unshift(message);
     };
-    window.addEventListener("beforeunload", this.closeWebSocket);
   },
   methods:{
     GetMessage(){
-      this.axios.get("https://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/main/getmessage/",{
+      this.axios.get(`${this.local_http}/main/getmessage/`,{
         params:{
           id : this.roomID,
         }})
@@ -59,7 +68,6 @@ export default{
         }
         else{
           this.messages = response.data;
-
         }
       })
       .catch(error=>{
@@ -71,14 +79,14 @@ export default{
         console.log('發送失敗: 訊息欄為空');
       }
       else{
-        this.axios.get('https://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/user/getcsrf/')
+        this.axios.get(`${this.local_http}/user/getcsrf/`)
         .then(response=>{
           const csrf = response.data.csrf_token;
           const data = {
             messages: this.sendmessage,
             id: this.roomID
           };
-          this.axios.post('https://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/main/sendmessage/', data, {
+          this.axios.post(`${this.local_http}/main/sendmessage/`, data, {
             withCredentials: true,
             headers: {
               'X-CSRFToken': csrf,
@@ -107,3 +115,24 @@ export default{
 
 
 </script>
+<style>
+.chat-window {
+  width: auto;
+  border: 1px solid #ccc;
+  overflow: hidden;
+}
+
+.message-container {
+  height: 200px;
+  overflow-y: auto;
+}
+
+#send-message-box {
+  width:100%;
+  height: 30px;
+}
+.input-container {
+  padding: 8px;
+  /* border-top: 1px solid #ccc; */
+}
+</style>

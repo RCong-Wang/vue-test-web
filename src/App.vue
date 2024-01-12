@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     checkisuserlogin(){
-      this.axios.get('https://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/user/checklogin/')
+      this.axios.get(`${this.local_http}/user/checklogin/`)
       .then(response=>{
         this.isuserlogin = response.data.loggin;
       })
@@ -57,12 +57,12 @@ export default {
       });
     },
     logout(){
-      this.axios.get('https://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/user/getcsrf/')
+      this.axios.get(`${this.local_http}/user/getcsrf/`)
       .then(response=>{
         const csrf = 'qtyghdd82MOhdd2EX84iEG1sxvgzrDjFl4LMK0bZZhUBIKnSPNK9T2GtPu4rFHTZ';
           
         console.log(csrf);
-        this.axios.get('https://5e0d-2401-e180-8d23-1fdd-b1d6-64a-7746-e486.ngrok-free.app/user/logout/',{
+        this.axios.get(`${this.local_http}/user/logout/`,{
             withCredentials: true,
             headers:{
                 'X-CSRFToken': csrf,
