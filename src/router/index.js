@@ -54,6 +54,7 @@ const routes = [
 
 const router = createRouter({
   history: createWebHistory(),
+  base: '/vue-test-web/',
   routes,
 });
 
