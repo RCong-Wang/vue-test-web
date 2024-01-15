@@ -18,22 +18,37 @@ import { createRouter, createWebHistory } from "vue-router";
 //   },
 // ];
 const routes = [
-    { path: '/',
+    { 
+      path: '/',
       component: () => import('../views/Home.vue'),
       name: "Home" ,
+      meta: {
+        title: 'Onlinetalk',
+      }
     },
-    { path: '/friend',
+    { 
+      path: '/friend',
       component: () => import('../views/Friend.vue'),
       name:"Friend",
+      meta: {
+        title: 'Friend',
+      }
     },
-    { path: '/chatroom',
+    { 
+      path: '/chatroom',
       component: () => import('../views/Chatroom.vue'),
       name:"Chatroom", 
+      meta: {
+        title: 'Chatroom',
+      }
     },
     {
       path: '/login',
       component: () => import('@/views/Login.vue'),
       name: "Login",
+      meta: {
+        title: 'Login',
+      }
     },
 ]
 
@@ -42,4 +57,10 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next)=>{
+  if(to.meta.title){
+    document.title = to.meta.title;
+  }
+  next()
+})
 export default router;
