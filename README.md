@@ -1,24 +1,25 @@
-# my-vue-app
+# onlinetalk
 
-## Project setup
-```
-npm install
-```
+## Project
+onlinetalk是前後端分離的網頁作品，功能單純僅提供1對1聊天，用戶可以搜尋其他使用者加入好友並創建聊天室進行聊天。
+此網站是onlinetalk的前端網站，運用vue3框架構建，搭配axios以及websocket實現即時1對1聊天。
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
 
-### Compiles and minifies for production
-```
-npm run build
-```
+### 用戶
 
-### Lints and fixes files
-```
-npm run lint
-```
+使用者可以創建用戶並登入
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### 好友功能
+
+1. 搜尋好友
+2. 加入好友
+
+### 聊天室
+
+1. 1對1聊天室
+
+### 訊息
+
+1. 實時訊息
+2. 刪除訊息
+3. 修改訊息(尚有bug)
