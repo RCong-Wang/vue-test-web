@@ -48,7 +48,7 @@ export default {
   },
   methods: {
     checkisuserlogin(){
-      this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/checklogin/`)
+      this.axios.get(`http://127.0.0.1:8000/user/checklogin/`)
       .then(response=>{
         this.isuserlogin = response.data.loggin;
       })
@@ -57,12 +57,12 @@ export default {
       });
     },
     logout(){
-      this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
+      this.axios.get(`http://127.0.0.1:8000/user/getcsrf/`)
       .then(response=>{
-        const csrf = 'qtyghdd82MOhdd2EX84iEG1sxvgzrDjFl4LMK0bZZhUBIKnSPNK9T2GtPu4rFHTZ';
-          
+        const csrf = response.data.csrf_token;
+
         console.log(csrf);
-        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/logout/`,{
+        this.axios.get(`http://127.0.0.1:8000/user/logout/`,{
             withCredentials: true,
             headers:{
                 'X-CSRFToken': csrf,

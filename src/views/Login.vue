@@ -37,11 +37,11 @@
                     username: this.username,
                     password: this.password
                 };
-                this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
+                this.axios.get(`http://127.0.0.1:8000/user/getcsrf/`)
                 .then(response=>{
                     const csrf = response.data.csrf_token;
                     
-                    this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/login/`,userdata,{
+                    this.axios.post(`http://127.0.0.1:8000/user/login/`,userdata,{
                         withCredentials: true,
                         headers:{
                             'X-CSRFToken': csrf,

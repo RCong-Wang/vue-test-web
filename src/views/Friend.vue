@@ -39,7 +39,7 @@
     },
     methods:{
       FriendList(){
-        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/friendlist/`)
+        this.axios.get(`http://127.0.0.1:8000/user/friendlist/`)
         .then(response=>{
           this.Friends = response.data.friends;
           console.log(this.Friends)
@@ -50,7 +50,7 @@
         console.log("good");
       },
       SearchFriend(){
-        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/searchfriend/`,{
+        this.axios.get(`http://127.0.0.1:8000/user/searchfriend/`,{
           params:{
             username: this.search_box
           }
@@ -66,11 +66,11 @@
         })
       },
       AddFriend(){
-        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
+        this.axios.get(`http://127.0.0.1:8000/user/getcsrf/`)
         .then(response=>{
           const csrf = response.data.csrf_token;
           console.log(csrf);          
-          this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/addfriend/`,this.user_id,{
+          this.axios.post(`http://127.0.0.1:8000/user/addfriend/`,this.user_id,{
               withCredentials: true,
               headers:{
                 'X-CSRFToken': csrf,
@@ -99,23 +99,25 @@
       },
       EnterChatroom(friend_id){
         console.log(friend_id);
-        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/isexistchatroom/`,{
+        this.axios.get(`http://127.0.0.1:8000/main/api/chatrooms/chatroom_is_exist/`,{
           params:{
             id: friend_id
           }
         })
         .then(response=>{
-          console.log("搜尋成功",response.data);
           if(response.data.success){
             this.$store.dispatch('updateroomid',response.data.success);
             this.$router.push('chatroom/');
           }
           else{
-            this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
+            this.axios.get(`http://127.0.0.1:8000/user/getcsrf/`)
             .then(response=>{
               const csrf = response.data.csrf_token;
               console.log(csrf);
-              this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/createchatroom/`,friend_id,{
+              const data = {
+                members: [friend_id],
+              }
+              this.axios.post(`http://127.0.0.1:8000/main/api/chatrooms/`,data,{
                 withCredentials: true,
                 headers:{
                   'X-CSRFToken': csrf,
@@ -123,7 +125,8 @@
                 }
               })
               .then(response=>{
-                this.$store.dispatch('updateroomid',response.data.success);
+                // console.log("創建成功",response.data);
+                this.$store.dispatch('updateroomid',response.data.id);
                 this.$router.push('chatroom/');
               })
               .catch(error=>{

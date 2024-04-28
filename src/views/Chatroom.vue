@@ -5,10 +5,18 @@
   <div class="chat-window">
     <div class="message-container" ref="messageContainer">
       <ul>
-        <li v-for="message in messages">
+        <li v-for="(message, index) in messages" :key="message.id">
           <p>
             <span style="font-size: 12px;">{{ message.time }}</span><br>
-            <span style="border-style: dashed;">{{ message.senter }}: {{ message.context }}</span>
+            {{ message.senter }}: <span style="border-style: dashed;" @contextmenu.prevent="showMessageContextMenu(message, $event)">
+                {{ message.context }}
+                <Teleport to="body">
+                  <MessageContextMenu 
+                    v-if="isMessageContextMenu" :position="contextMenuPosion" :message="currentMessage"
+                    @close="closeMessageContextMenu"
+                  />
+                </Teleport>
+            </span>
           </p>
         </li>
       </ul>
@@ -22,9 +30,36 @@
 
 <script>
 import { inject } from 'vue';
+import { ref } from 'vue';
+
+import MessageContextMenu from '@/components/MessageContextMenu.vue';
 
 export default{
   name: "Chatroom",
+  components:{
+    MessageContextMenu,
+  },
+  setup(){
+    const isMessageContextMenu = ref(false);
+    const contextMenuPosion = ref({top:0,left:0});
+    const currentMessage = ref(null);
+    const showMessageContextMenu = (message, event)=>{
+      event.preventDefault();
+      isMessageContextMenu.value = true;
+      contextMenuPosion.value = {top:event.clientY,left:event.clientX};
+      currentMessage.value = message;
+    };
+    const closeMessageContextMenu = () =>{
+      isMessageContextMenu.value = false;
+    };
+    return {
+      isMessageContextMenu,
+      contextMenuPosion,
+      currentMessage,
+      showMessageContextMenu,
+      closeMessageContextMenu,
+    }
+  },
   computed:{
     roomID() {
       return this.$store.getters.getroomid;
@@ -43,7 +78,7 @@ export default{
   created(){
     this.axios = inject('axios');
     this.GetMessage();
-    this.websocket = new WebSocket(`wss://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/ws/chat/${this.roomID}/`);
+    this.websocket = new WebSocket(`ws://127.0.0.1:8000/ws/chat/${this.roomID}/`);
     this.websocket.onopen = (event) =>{
       console.log("successful link: ",event);
     };
@@ -58,7 +93,7 @@ export default{
   },
   methods:{
     GetMessage(){
-      this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/getmessage/`,{
+      this.axios.get(`http://127.0.0.1:8000/main/api/messages/`,{
         params:{
           id : this.roomID,
         }})
@@ -79,14 +114,14 @@ export default{
         console.log('發送失敗: 訊息欄為空');
       }
       else{
-        this.axios.get(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/user/getcsrf/`)
+        this.axios.get(`http://127.0.0.1:8000/user/getcsrf/`)
         .then(response=>{
           const csrf = response.data.csrf_token;
           const data = {
-            messages: this.sendmessage,
-            id: this.roomID
+            context: this.sendmessage,
+            room: [this.roomID],
           };
-          this.axios.post(`https://aa0e-2401-e180-8850-ae-c03b-534a-dcee-f333.ngrok-free.app/main/sendmessage/`, data, {
+          this.axios.post(`http://127.0.0.1:8000/main/api/messages/`, data, {
             withCredentials: true,
             headers: {
               'X-CSRFToken': csrf,

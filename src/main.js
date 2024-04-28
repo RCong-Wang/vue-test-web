@@ -4,7 +4,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 import store from "./store";
-import axiosInstance from './api/index'; // 导入 axios 实例
+import axiosInstance from './api/index';
 
 
 // app.provide('axios', axiosInstance)
